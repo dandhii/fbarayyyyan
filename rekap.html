@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rekap Pemasukan - FBA Rayyan Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto:wght@400;700&display=swap');
+        body { font-family: 'Roboto', sans-serif; background-color: #f3f4f6; }
+        h1, h2 { font-family: 'Oswald', sans-serif; }
+    </style>
+</head>
+<body>
+    <nav class="bg-black text-white p-6 shadow-lg flex justify-between items-center">
+        <h1 class="text-xl uppercase italic tracking-tighter">FBA RAYYAN <span class="text-yellow-500 text-sm">REKAP PEMASUKAN</span></h1>
+        <a href="index.html" class="text-xs font-bold border border-yellow-500 px-4 py-2 rounded text-yellow-500 hover:bg-yellow-500 hover:text-black transition">Back to Web</a>
+    </nav>
+
+    <div class="max-w-4xl mx-auto mt-10 px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+            <div class="bg-white p-6 rounded-2xl shadow-md border-l-8 border-green-500">
+                <p class="text-xs font-bold text-gray-400 uppercase">Total Pemasukan (Est.)</p>
+                <h2 id="totalPemasukan" class="text-3xl font-black text-green-600 mt-2">Rp 0</h2>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-md border-l-8 border-blue-500">
+                <p class="text-xs font-bold text-gray-400 uppercase">Total Jam Tersewa</p>
+                <h2 id="totalJam" class="text-3xl font-black text-blue-600 mt-2">0 Jam</h2>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
+            <div class="bg-gray-800 p-4 flex justify-between items-center">
+                <h3 class="text-white font-bold uppercase text-sm">Log Pemasukan Bulanan</h3>
+                <button onclick="tambahData()" class="bg-yellow-500 text-black text-[10px] font-black px-3 py-1 rounded hover:bg-yellow-400">TAMBAH REKAP</button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-100 text-[10px] uppercase font-bold text-gray-600">
+                            <th class="p-4 border-b">Bulan</th>
+                            <th class="p-4 border-b">Jumlah Jam</th>
+                            <th class="p-4 border-b">Total Uang</th>
+                            <th class="p-4 border-b">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelBody" class="text-sm">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Dummy atau dari LocalStorage agar tersimpan di browser Anda
+        let rekapData = JSON.parse(localStorage.getItem('fba_rekap')) || [];
+
+        function simpanKeStorage() {
+            localStorage.setItem('fba_rekap', JSON.stringify(rekapData));
+            updateUI();
+        }
+
+        function tambahData() {
+            const bulan = prompt("Masukkan Bulan & Tahun (Contoh: Januari 2026):");
+            const jam = prompt("Total Jam Tersewa:");
+            const uang = prompt("Total Pemasukan (Tanpa Titik):");
+
+            if (bulan && jam && uang) {
+                rekapData.push({ bulan, jam: parseInt(jam), uang: parseInt(uang) });
+                simpanKeStorage();
+            }
+        }
+
+        function hapusData(index) {
+            if(confirm("Hapus data rekap ini?")) {
+                rekapData.splice(index, 1);
+                simpanKeStorage();
+            }
+        }
+
+        function updateUI() {
+            const tbody = document.getElementById('tabelBody');
+            let totalUang = 0;
+            let totalJam = 0;
+            tbody.innerHTML = "";
+
+            rekapData.forEach((item, index) => {
+                totalUang += item.uang;
+                totalJam += item.jam;
+                tbody.innerHTML += `
+                    <tr class="border-b hover:bg-gray-50 transition">
+                        <td class="p-4 font-bold">${item.bulan}</td>
+                        <td class="p-4">${item.jam} Jam</td>
+                        <td class="p-4 font-bold text-green-600">Rp ${item.uang.toLocaleString('id-ID')}</td>
+                        <td class="p-4">
+                            <button onclick="hapusData(${index})" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('totalPemasukan').innerText = "Rp " + totalUang.toLocaleString('id-ID');
+            document.getElementById('totalJam').innerText = totalJam + " Jam";
+        }
+
+        // Jalankan saat pertama kali buka
+        updateUI();
+    </script>
+</body>
+</html>
