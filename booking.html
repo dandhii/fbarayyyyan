@@ -2,78 +2,103 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Booking - FBA Rayyan Soccer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Roboto:wght@400;700&display=swap');
         body { font-family: 'Roboto', sans-serif; background-color: #f3f4f6; }
-        h1 { font-family: 'Oswald', sans-serif; }
+        h1, h2, h3, nav a { font-family: 'Oswald', sans-serif; }
+        input, select { font-size: 16px !important; } /* Mencegah auto-zoom di iPhone */
     </style>
 </head>
 <body>
-
-    <nav class="bg-black text-white p-6 shadow-md text-center">
-        <h1 class="text-2xl uppercase tracking-tighter italic">FBA RAYYAN <span class="text-yellow-500 font-light">BOOKING</span></h1>
+    <nav class="bg-black text-white p-3 shadow-xl sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-2">
+                <h1 class="text-lg uppercase italic font-bold tracking-tighter">FBA RAYYAN <span class="text-yellow-500 font-light">SOCCER</span></h1>
+            </a>
+            <a href="schedule.html" class="text-xs font-bold uppercase text-yellow-500">Kembali</a>
+        </div>
     </nav>
 
-    <div class="max-w-md mx-auto mt-10 p-6 bg-white shadow-2xl rounded-xl border-t-4 border-yellow-500 mb-10">
-        <h2 class="text-xl font-bold mb-6 text-center uppercase tracking-wide">Data Pemesan</h2>
-        
-        <form id="bookingForm" class="space-y-4">
-            <div>
-                <label class="block text-[10px] font-bold uppercase text-gray-400 mb-1">Jadwal Mulai</label>
-                <div class="bg-gray-100 p-3 rounded font-bold text-sm text-gray-700" id="display-info">-</div>
+    <div class="max-w-lg mx-auto mt-4 p-4 flex flex-col gap-4">
+        <div class="bg-white p-6 shadow-xl rounded-2xl border-t-4 border-yellow-500">
+            <div class="mb-4 p-3 bg-yellow-50 border border-yellow-100 rounded-xl">
+                <p id="display-date" class="text-[9px] font-bold text-yellow-700 uppercase"></p>
+                <p id="display-time" class="text-md font-black text-black"></p>
             </div>
 
-            <div>
-                <label class="block text-[10px] font-bold uppercase text-gray-400 mb-1">Durasi Bermain</label>
-                <select id="durasi" class="w-full p-3 border rounded focus:ring-2 focus:ring-yellow-500 outline-none font-bold">
-                    <option value="1">1 Jam</option>
-                    <option value="2">2 Jam</option>
-                    <option value="3">3 Jam</option>
+            <form id="bookingForm" class="space-y-4">
+                <input type="text" id="nama" required placeholder="Nama Lengkap" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none">
+                <input type="text" id="namaTeam" required placeholder="Nama Team" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none">
+                <input type="number" id="wa" placeholder="WhatsApp (628...)" required class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none">
+                <select id="kategori" onchange="updatePriceDisplay()" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl font-bold">
+                    <option value="umum">Umum</option>
+                    <option value="pelajar">Pelajar (Wajib Kartu)</option>
                 </select>
-            </div>
+                <div class="p-4 bg-black rounded-xl text-white flex justify-between items-center">
+                    <span class="text-[10px] font-bold uppercase opacity-70">Harga (2 Jam)</span>
+                    <span id="display-price" class="text-lg font-bold text-yellow-500">Rp 0</span>
+                </div>
+                <button type="submit" class="w-full bg-yellow-500 text-black font-bold py-3 rounded-xl uppercase text-sm shadow-md">Lanjut ke Ringkasan</button>
+            </form>
+        </div>
 
-            <div>
-                <label class="block text-[10px] font-bold uppercase text-gray-400 mb-1">Nama Lengkap</label>
-                <input type="text" id="nama" required class="w-full p-3 border rounded focus:ring-2 focus:ring-yellow-500 outline-none" placeholder="Nama Anda">
-            </div>
-
-            <div>
-                <label class="block text-[10px] font-bold uppercase text-gray-400 mb-1">Nomor WhatsApp</label>
-                <input type="tel" id="wa" required class="w-full p-3 border rounded focus:ring-2 focus:ring-yellow-500 outline-none" placeholder="0812...">
-            </div>
-
-            <div>
-                <label class="block text-[10px] font-bold uppercase text-gray-400 mb-1">Alamat Email</label>
-                <input type="email" id="email" required class="w-full p-3 border rounded focus:ring-2 focus:ring-yellow-500 outline-none" placeholder="nama@gmail.com">
-            </div>
-
-            <div class="pt-4 space-y-3">
-                <button type="submit" class="w-full bg-black text-white font-bold py-4 rounded shadow-lg hover:bg-gray-800 transition uppercase tracking-widest flex items-center justify-center gap-2">
-                    Lanjut ke Pembayaran <i class="fa-solid fa-chevron-right text-[10px]"></i>
-                </button>
-                <button type="button" onclick="location.href='schedule.html'" class="w-full text-gray-400 font-bold py-2 text-xs uppercase tracking-widest">Batal</button>
-            </div>
-        </form>
+        <div class="bg-white p-4 rounded-xl shadow-md border border-gray-100">
+            <h3 class="font-bold text-blue-700 text-xs uppercase mb-2">Aturan Singkat:</h3>
+            <ul class="text-[10px] space-y-1 text-gray-600">
+                <li>• Wajib DP 50% dari harga sewa.</li>
+                <li>• Pembatalan = Uang HANGUS.</li>
+                <li>• Gratis 1 dus air mineral (kecuali pelajar).</li>
+            </ul>
+        </div>
     </div>
 
     <script>
         const params = new URLSearchParams(window.location.search);
-        const time = params.get('time');
-        const date = params.get('date');
-        document.getElementById('display-info').innerText = `${date} | Pukul ${time}`;
+        const dateStr = params.get('date');
+        const timeStr = params.get('time');
+
+        function getHarga(date, time, kategori) {
+            const dateObj = new Date(date);
+            const isWeekend = (dateObj.getDay() === 0 || dateObj.getDay() === 6);
+            const hour = parseInt(time.split(':')[0]);
+            if (kategori === 'pelajar' && hour <= 14) return 300000;
+            if (isWeekend) {
+                if (hour <= 14) return 500000;
+                if (hour === 16) return 800000;
+                if (hour >= 18 && hour <= 20) return 1000000;
+                return 800000;
+            } else {
+                if (hour <= 14) return 400000;
+                if (hour === 16) return 650000;
+                if (hour >= 18 && hour <= 20) return 800000;
+                return 650000;
+            }
+        }
+
+        function updatePriceDisplay() {
+            const kategori = document.getElementById('kategori').value;
+            const harga = getHarga(dateStr, timeStr, kategori);
+            document.getElementById('display-price').innerText = "Rp " + harga.toLocaleString('id-ID');
+            sessionStorage.setItem('tempPrice', harga);
+        }
+
+        if (dateStr && timeStr) {
+            document.getElementById('display-date').innerText = new Date(dateStr).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+            document.getElementById('display-time').innerText = "Pukul " + timeStr;
+            updatePriceDisplay();
+        } else { window.location.href = "schedule.html"; }
 
         document.getElementById('bookingForm').onsubmit = function(e) {
             e.preventDefault();
             sessionStorage.setItem('nama', document.getElementById('nama').value);
+            sessionStorage.setItem('namaTeam', document.getElementById('namaTeam').value);
             sessionStorage.setItem('wa', document.getElementById('wa').value);
-            sessionStorage.setItem('email', document.getElementById('email').value);
-            sessionStorage.setItem('durasi', document.getElementById('durasi').value);
-            sessionStorage.setItem('date', date);
-            sessionStorage.setItem('time', time);
+            sessionStorage.setItem('date', dateStr);
+            sessionStorage.setItem('time', timeStr);
             window.location.href = "info-booking.html";
         };
     </script>

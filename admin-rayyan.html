@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - FBA Rayyan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto:wght@400;700&display=swap');
+        body { font-family: 'Roboto', sans-serif; }
+        h1 { font-family: 'Oswald', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-900 text-white p-4 md:p-10">
+
+    <div class="max-w-5xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-10 border-b border-gray-700 pb-6 gap-4">
+            <div>
+                <h1 class="text-4xl font-bold uppercase italic text-yellow-500">ADMIN <span class="text-white">DASHBOARD</span></h1>
+                <p class="text-gray-400 text-xs tracking-widest uppercase mt-1">FBA Rayyan Soccer - Management</p>
+            </div>
+            <div class="flex gap-3">
+                <a href="schedule.html" class="bg-gray-800 hover:bg-gray-700 px-5 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition border border-gray-600">
+                    <i class="fa-solid fa-calendar-days mr-2 text-yellow-500"></i> Lihat Web
+                </a>
+                <button onclick="location.reload()" class="bg-yellow-500 hover:bg-yellow-400 text-black px-5 py-2 rounded-lg text-[10px] font-bold uppercase tracking-wider transition">
+                    <i class="fa-solid fa-rotate mr-2"></i> Refresh Data
+                </button>
+            </div>
+        </div>
+
+        <div id="stats" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-gray-800 p-5 rounded-2xl border border-gray-700 shadow-xl">
+                <p class="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Total Booking</p>
+                <h3 id="stat-total" class="text-3xl font-bold mt-1">0</h3>
+            </div>
+            <div class="bg-gray-800 p-5 rounded-2xl border border-gray-700 shadow-xl border-l-4 border-l-yellow-500">
+                <p class="text-gray-400 text-[10px] font-bold uppercase tracking-widest">Status Sistem</p>
+                <h3 class="text-2xl font-bold mt-1 text-green-500">ONLINE</h3>
+            </div>
+        </div>
+
+        <div class="bg-gray-800 rounded-3xl overflow-hidden shadow-2xl border border-gray-700">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-black text-yellow-500 uppercase text-[10px] tracking-[0.2em] font-bold">
+                        <tr>
+                            <th class="p-5">Tanggal Main</th>
+                            <th class="p-5">Jam</th>
+                            <th class="p-5">Nama Pemesan</th>
+                            <th class="p-5">WhatsApp</th>
+                            <th class="p-5 text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-list" class="divide-y divide-gray-700 text-sm">
+                        </tbody>
+                </table>
+            </div>
+            <div id="loader" class="p-20 text-center text-gray-500 uppercase tracking-widest text-xs italic">
+                <i class="fa-solid fa-spinner animate-spin mb-3 text-2xl block mx-auto"></i>
+                Sedang mengsinkronkan data Firebase...
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script>
+        // --- 1. SETTING PASSWORD ADMIN ---
+        const PASSWORD_SAYA = "fba123"; // Ganti password Anda di sini
+        
+        const login = prompt("Masukkan Password Khusus Admin:");
+        if (login !== PASSWORD_SAYA) {
+            alert("Akses Ditolak!");
+            window.location.href = "index.html";
+        } else {
+            // --- 2. JIKA PASSWORD BENAR, JALANKAN SISTEM ---
+            const firebaseConfig = {
+                databaseURL: "https://fba-rayyan-default-rtdb.asia-southeast1.firebasedatabase.app/"
+            };
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.database();
+
+            function loadData() {
+                db.ref('bookings').on('value', (snapshot) => {
+                    const list = document.getElementById('admin-list');
+                    const loader = document.getElementById('loader');
+                    const statTotal = document.getElementById('stat-total');
+                    
+                    list.innerHTML = "";
+                    const data = snapshot.val();
+                    
+                    if (!data) {
+                        loader.innerHTML = "Belum ada pesanan yang masuk.";
+                        statTotal.innerText = "0";
+                        return;
+                    }
+                    
+                    loader.style.display = "none";
+                    const keys = Object.keys(data);
+                    statTotal.innerText = keys.length;
+
+                    keys.forEach(id => {
+                        const item = data[id];
+                        list.innerHTML += `
+                            <tr class="hover:bg-gray-700/50 transition border-b border-gray-700/50">
+                                <td class="p-5 font-bold text-yellow-500">${item.date}</td>
+                                <td class="p-5">
+                                    <span class="bg-white text-black px-3 py-1 rounded-full text-[10px] font-black tracking-tighter">
+                                        ${item.time}
+                                    </span>
+                                </td>
+                                <td class="p-5 text-gray-200 capitalize">${item.nama || 'Tanpa Nama'}</td>
+                                <td class="p-5">
+                                    <a href="https://wa.me/${item.wa}" target="_blank" class="text-green-400 hover:underline text-xs">
+                                        <i class="fa-brands fa-whatsapp mr-1"></i> ${item.wa || '-'}
+                                    </a>
+                                </td>
+                                <td class="p-5 text-center">
+                                    <button onclick="hapusBooking('${id}', '${item.date}', '${item.time}')" 
+                                            class="bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white px-4 py-2 rounded-lg text-[10px] font-bold uppercase transition border border-red-500/20">
+                                        <i class="fa-solid fa-trash-can mr-1"></i> Batal
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                });
+            }
+
+            // Fungsi Hapus Data
+            window.hapusBooking = function(id, tgl, jam) {
+                if (confirm(`Batalkan pesanan tanggal ${tgl} jam ${jam}? \n\nJadwal ini akan otomatis TERSEDIA kembali di website.`)) {
+                    db.ref('bookings/' + id).remove()
+                    .then(() => alert("Jadwal Berhasil Dihapus!"))
+                    .catch(err => alert("Gagal: " + err));
+                }
+            }
+
+            loadData();
+        }
+    </script>
+</body>
+</html>
