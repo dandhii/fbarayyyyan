@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule - FBA Rayyan Soccer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Roboto:wght@400;700&display=swap');
+        body { font-family: 'Roboto', sans-serif; background-color: #f3f4f6; }
+        h1, h2, h3, .calendar-header { font-family: 'Oswald', sans-serif; }
+        
+        /* Grid Kalender */
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); min-width: 700px; }
+        .calendar-day { min-height: 150px; border: 1px solid #eee; padding: 6px; background: #fff; }
+        .calendar-header { background: #000; color: #fbbf24; padding: 10px 0; text-align: center; font-size: 11px; text-transform: uppercase; position: sticky; top: 0; }
+        
+        .time-slot { font-size: 9px; padding: 5px; margin-bottom: 3px; border-radius: 4px; text-align: center; border: 1px solid #e5e7eb; display: block; text-decoration: none; color: #374151; }
+        .time-slot:active { background: #fbbf24; color: black; } /* Efek klik di HP */
+
+        /* Container Scroll Mobile */
+        .overflow-mobile { 
+            overflow-x: auto; 
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+        }
+
+        /* Sidebar Sticky (Hanya Desktop) */
+        @media (min-width: 1024px) {
+            .sticky-sidebar { position: sticky; top: 100px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="bg-black text-white sticky top-0 z-50 h-16 flex items-center shadow-xl">
+        <div class="max-w-[1400px] mx-auto px-4 flex justify-between items-center w-full">
+            <a href="index.html" class="flex items-center space-x-2">
+                <div class="bg-yellow-500 p-1.5 rounded-lg"><i class="fa-solid fa-futbol text-lg text-black"></i></div>
+                <span class="text-lg font-bold uppercase italic">FBA RAYYAN</span>
+            </a>
+            <a href="index.html" class="text-xs font-bold text-yellow-500 border border-yellow-500 px-3 py-1 rounded">MENU</a>
+        </div>
+    </nav>
+
+    <main class="max-w-[1400px] mx-auto px-4 py-6">
+        <div class="flex flex-col lg:flex-row gap-6">
+            
+            <div class="lg:w-2/3">
+                <div class="flex justify-between items-center mb-4">
+                    <h1 id="monthDisplay" class="text-2xl font-bold uppercase italic tracking-tighter">BULAN...</h1>
+                    <div class="flex gap-1">
+                        <button onclick="changeMonth(-1)" class="bg-black text-white p-2 rounded-lg text-xs"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button onclick="changeMonth(1)" class="bg-black text-white p-2 rounded-lg text-xs"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+
+                <div class="lg:hidden text-[10px] text-gray-400 mb-2 italic animate-pulse">
+                    <i class="fa-solid fa-arrows-left-right"></i> Geser ke samping untuk lihat hari lainnya
+                </div>
+
+                <div class="overflow-mobile shadow-lg rounded-xl border border-gray-200 bg-white">
+                    <div class="calendar-grid">
+                        <div class="calendar-header">Min</div><div class="calendar-header">Sen</div><div class="calendar-header">Sel</div><div class="calendar-header">Rab</div><div class="calendar-header">Kam</div><div class="calendar-header">Jum</div><div class="calendar-header">Sab</div>
+                        </div>
+                    <div id="calendarGrid" class="calendar-grid"></div>
+                </div>
+            </div>
+
+            <div class="lg:w-1/3">
+                <div class="sticky-sidebar space-y-4">
+                    <div class="bg-white shadow-lg rounded-xl overflow-hidden border border-blue-100">
+                        <div class="bg-blue-700 text-white p-3 font-bold uppercase text-xs flex items-center gap-2">
+                            <i class="fa-solid fa-circle-info"></i> Aturan Booking
+                        </div>
+                        <div class="p-4 space-y-5 text-[11px] leading-relaxed text-gray-700">
+                            <div>
+                                <h3 class="font-bold text-blue-800 uppercase mb-1 underline">1. Pembatalan</h3>
+                                <p>Batal/Ganti Jadwal Hari-H = <span class="text-red-600 font-bold">Uang Hangus</span>.</p>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-blue-800 uppercase mb-1 underline">2. Warna Jadwal</h3>
+                                <p><span class="text-gray-400 font-bold">Putih</span>: Kosong | <span class="text-yellow-600 font-bold">Kuning</span>: Proses | <span class="text-red-600 font-bold">Merah</span>: Terisi.</p>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-blue-800 uppercase mb-1 underline">3. Pelunasan</h3>
+                                <p>Waktu pelunasan adalah **15 Menit** setelah klik booking.</p>
+                            </div>
+                            <div class="bg-blue-50 p-2 rounded text-blue-900 font-bold text-center italic border border-blue-200">
+                                Booking wajib melakukan PELUNASAN.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+
+    <script>
+        let currentDate = new Date();
+        const pricing = {
+            weekday: { "06:00": "400k", "08:00": "400k", "10:00": "400k", "12:00": "400k", "14:00": "400k", "16:00": "650k", "18:00": "800k", "20:00": "800k", "22:00": "650k" },
+            weekend: { "06:00": "500k", "08:00": "500k", "10:00": "500k", "12:00": "500k", "14:00": "500k", "16:00": "800k", "18:00": "1.000k", "20:00": "1.000k", "22:00": "800k" }
+        };
+        const slots = ["06:00", "08:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00"];
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            const monthDisplay = document.getElementById('monthDisplay');
+            grid.innerHTML = "";
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            monthDisplay.innerText = `${monthNames[month]} ${year}`;
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            for (let i = 0; i < firstDay; i++) { grid.innerHTML += `<div class="calendar-day bg-gray-50/50"></div>`; }
+            for (let day = 1; day <= daysInMonth; day++) {
+                const isWeekend = ([0, 6].includes(new Date(year, month, day).getDay()));
+                const fullDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                let html = `<div class="calendar-day">
+                                <span class="text-[10px] font-bold block mb-2 ${isWeekend ? 'text-red-500' : 'text-gray-400'}">${day}</span>`;
+                slots.forEach(time => {
+                    let price = isWeekend ? pricing.weekend[time] : pricing.weekday[time];
+                    html += `<a href="booking.html?time=${time}&date=${fullDate}" class="time-slot">${time}<br><span class="font-bold text-yellow-600">${price}</span></a>`;
+                });
+                html += `</div>`;
+                grid.innerHTML += html;
+            }
+        }
+        function changeMonth(step) { currentDate.setMonth(currentDate.getMonth() + step); renderCalendar(); }
+        renderCalendar();
+    </script>
+</body>
+</html>

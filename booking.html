@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking - FBA Rayyan Soccer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto:wght@400;700&display=swap');
+        body { font-family: 'Roboto', sans-serif; background-color: #f3f4f6; }
+        h1 { font-family: 'Oswald', sans-serif; }
+    </style>
+</head>
+<body>
+
+    <nav class="bg-black text-white p-6 shadow-md text-center">
+        <h1 class="text-2xl uppercase tracking-tighter italic">FBA RAYYAN <span class="text-yellow-500 font-light">BOOKING</span></h1>
+    </nav>
+
+    <div class="max-w-md mx-auto mt-10 p-6 bg-white shadow-2xl rounded-xl border-t-4 border-yellow-500 mb-10">
+        <h2 class="text-xl font-bold mb-6 text-center uppercase tracking-wide">Data Pemesan</h2>
+        
+        <form id="bookingForm" class="space-y-4">
+            <div>
+                <label class="block text-[10px] font-bold uppercase text-gray-400 mb-1">Jadwal Mulai</label>
+                <div class="bg-gray-100 p-3 rounded font-bold text-sm text-gray-700" id="display-info">-</div>
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-bold uppercase text-gray-400 mb-1">Durasi Bermain</label>
+                <select id="durasi" class="w-full p-3 border rounded focus:ring-2 focus:ring-yellow-500 outline-none font-bold">
+                    <option value="1">1 Jam</option>
+                    <option value="2">2 Jam</option>
+                    <option value="3">3 Jam</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-bold uppercase text-gray-400 mb-1">Nama Lengkap</label>
+                <input type="text" id="nama" required class="w-full p-3 border rounded focus:ring-2 focus:ring-yellow-500 outline-none" placeholder="Nama Anda">
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-bold uppercase text-gray-400 mb-1">Nomor WhatsApp</label>
+                <input type="tel" id="wa" required class="w-full p-3 border rounded focus:ring-2 focus:ring-yellow-500 outline-none" placeholder="0812...">
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-bold uppercase text-gray-400 mb-1">Alamat Email</label>
+                <input type="email" id="email" required class="w-full p-3 border rounded focus:ring-2 focus:ring-yellow-500 outline-none" placeholder="nama@gmail.com">
+            </div>
+
+            <div class="pt-4 space-y-3">
+                <button type="submit" class="w-full bg-black text-white font-bold py-4 rounded shadow-lg hover:bg-gray-800 transition uppercase tracking-widest flex items-center justify-center gap-2">
+                    Lanjut ke Pembayaran <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                </button>
+                <button type="button" onclick="location.href='schedule.html'" class="w-full text-gray-400 font-bold py-2 text-xs uppercase tracking-widest">Batal</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const time = params.get('time');
+        const date = params.get('date');
+        document.getElementById('display-info').innerText = `${date} | Pukul ${time}`;
+
+        document.getElementById('bookingForm').onsubmit = function(e) {
+            e.preventDefault();
+            sessionStorage.setItem('nama', document.getElementById('nama').value);
+            sessionStorage.setItem('wa', document.getElementById('wa').value);
+            sessionStorage.setItem('email', document.getElementById('email').value);
+            sessionStorage.setItem('durasi', document.getElementById('durasi').value);
+            sessionStorage.setItem('date', date);
+            sessionStorage.setItem('time', time);
+            window.location.href = "info-booking.html";
+        };
+    </script>
+</body>
+</html>

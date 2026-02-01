@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FBA Rayyan Soccer - Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Montserrat:wght@400;700;800&display=swap');
+        body { font-family: 'Montserrat', sans-serif; background-color: black; }
+        h1, h2, .nav-link { font-family: 'Oswald', sans-serif; }
+        /* Overlay agar teks tetap tajam dan mudah dibaca */
+        .hero-gradient { background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.8) 100%); }
+        .gold-text { color: #fbbf24; }
+    </style>
+</head>
+<body class="text-white">
+
+    <nav class="absolute w-full z-50 bg-black/40 backdrop-blur-md border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-24">
+            <a href="index.html" class="flex items-center space-x-4">
+                <div class="bg-yellow-500 p-1 rounded-lg">
+                    <i class="fa-solid fa-futbol text-3xl text-black"></i>
+                </div>
+                <div>
+                    <span class="text-2xl font-black tracking-tighter block leading-none uppercase italic">FBA RAYYAN</span>
+                    <span class="text-[10px] text-yellow-500 uppercase tracking-[0.35em] font-bold">Soccer & Sport Center</span>
+                </div>
+            </a>
+
+            <div class="hidden md:flex space-x-10 uppercase font-bold text-xs tracking-widest">
+                <a href="index.html" class="text-yellow-500">Home</a>
+                <a href="schedule.html" class="hover:text-yellow-500 transition">Booking</a>
+                <a href="facility.html" class="hover:text-yellow-500 transition">Facility</a>
+                <a href="gallery.html" class="hover:text-yellow-500 transition">Gallery</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="relative h-screen flex items-center justify-center overflow-hidden">
+        <img src="https://png.pngtree.com/background/20230527/original/pngtree-mini-soccer-goal-and-goalie-at-an-electronic-device-picture-image_2764773.jpg" 
+             class="absolute inset-0 w-full h-full object-cover" 
+             alt="FBA Rayyan Background">
+        
+        <div class="absolute inset-0 hero-gradient"></div>
+
+        <div class="relative z-10 text-center px-4">
+            <h2 class="text-yellow-500 font-bold tracking-[0.5em] text-sm mb-4 uppercase">Premium Grass & Best Experience</h2>
+            <h1 class="text-6xl md:text-9xl font-black mb-8 tracking-tighter uppercase italic leading-none">
+                PLAY LIKE A <br> <span class="gold-text">CHAMPION.</span>
+            </h1>
+            
+            <p class="text-gray-200 text-sm md:text-lg mb-10 max-w-2xl mx-auto font-medium">
+                Rasakan sensasi bermain di lapangan mini soccer terbaik di FBA Rayyan Soccer dengan standar internasional.
+            </p>
+
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6">
+                <a href="schedule.html" class="bg-yellow-500 text-black px-12 py-5 rounded-sm font-extrabold uppercase tracking-widest hover:scale-105 transition shadow-2xl flex items-center gap-3">
+                    Cek Jadwal <i class="fa-solid fa-calendar-check"></i>
+                </a>
+                <a href="facility.html" class="border border-white/50 backdrop-blur-sm text-white px-12 py-5 rounded-sm font-extrabold uppercase tracking-widest hover:bg-white hover:text-black transition">
+                    Fasilitas
+                </a>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>

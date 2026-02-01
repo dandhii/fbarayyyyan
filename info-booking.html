@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Info Booking - FBA Rayyan Soccer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto:wght@400;700&display=swap');
+        body { font-family: 'Roboto', sans-serif; background-color: #f9fafb; }
+        h1, h2 { font-family: 'Oswald', sans-serif; }
+    </style>
+</head>
+<body>
+    <nav class="bg-black text-white p-6 text-center uppercase shadow-lg">
+        <h1 class="text-xl italic">FBA RAYYAN <span class="text-yellow-500">RINGKASAN</span></h1>
+    </nav>
+
+    <div class="max-w-2xl mx-auto mt-8 px-4 pb-12">
+        <div class="bg-white shadow-xl rounded-2xl overflow-hidden border">
+            <div class="bg-[#d4af37] p-6 text-center text-black">
+                <h2 class="text-2xl font-bold uppercase tracking-widest">DETAIL PEMESANAN</h2>
+            </div>
+
+            <div class="p-6 md:p-8 space-y-6">
+                <div class="space-y-4 text-sm border-b pb-6">
+                    <div class="flex justify-between"><span class="text-gray-500">Nama:</span><span id="res-nama" class="font-bold text-right">-</span></div>
+                    <div class="flex justify-between"><span class="text-gray-500">Jadwal Mulai:</span><span id="res-jadwal" class="font-bold text-right text-yellow-600">-</span></div>
+                    <div class="flex justify-between"><span class="text-gray-500">Durasi:</span><span id="res-durasi" class="font-bold text-right">-</span></div>
+                    
+                    <div class="flex justify-between items-center bg-gray-50 p-4 rounded-lg border border-dashed border-gray-300">
+                        <span class="text-gray-900 font-bold uppercase tracking-tighter">Total Biaya:</span>
+                        <span id="res-total" class="text-2xl font-black text-blue-700 italic">Rp 0</span>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-xs font-bold uppercase text-gray-400">Pilih Metode Pembayaran:</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                            <p class="text-[10px] font-bold text-blue-800 uppercase mb-2"><i class="fa-solid fa-bank"></i> Transfer Bank</p>
+                            <p class="text-sm font-bold text-blue-900">BCA: 1234 - 5678 - 90</p>
+                            <p class="text-[9px] text-blue-600 mt-1 uppercase">A/N FBA RAYYAN SOCCER</p>
+                        </div>
+                        <div class="bg-orange-50 p-4 rounded-lg border border-orange-100">
+                            <p class="text-[10px] font-bold text-orange-800 uppercase mb-2"><i class="fa-solid fa-hand-holding-dollar"></i> Bayar di Tempat</p>
+                            <p class="text-sm font-bold text-orange-900 italic">Langsung ke Kasir</p>
+                            <p class="text-[9px] text-orange-600 mt-1 uppercase">*Konfirmasi via WA</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-4 space-y-3">
+                    <button onclick="sendWA()" class="w-full bg-[#46a35e] text-white font-bold py-4 rounded-xl shadow-lg hover:bg-green-700 transition flex items-center justify-center gap-3 uppercase tracking-widest text-sm">
+                        <i class="fa-brands fa-whatsapp text-2xl"></i>
+                        Konfirmasi Booking
+                    </button>
+
+                    <button onclick="cancelBooking()" class="w-full bg-red-600 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-red-700 transition flex items-center justify-center gap-3 uppercase tracking-widest text-sm">
+                        <i class="fa-solid fa-trash-can"></i>
+                        Batalkan Pesanan
+                    </button>
+                    
+                    <p class="text-center text-[10px] text-gray-400 italic">Data akan terhapus jika pesanan dibatalkan.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const nama = sessionStorage.getItem('nama');
+        const durasi = parseInt(sessionStorage.getItem('durasi')) || 1;
+        const dateStr = sessionStorage.getItem('date');
+        const time = sessionStorage.getItem('time');
+
+        function hitungHarga() {
+            const dateObj = new Date(dateStr);
+            const isWeekend = (dateObj.getDay() === 0 || dateObj.getDay() === 6);
+            const hour = parseInt(time.split(":")[0]);
+            let hargaPerJam = 0;
+
+            if (isWeekend) {
+                if (hour >= 6 && hour < 16) hargaPerJam = 500000;
+                else if (hour === 16 || hour === 22) hargaPerJam = 800000;
+                else if (hour >= 18 && hour <= 20) hargaPerJam = 1000000;
+            } else {
+                if (hour >= 6 && hour < 16) hargaPerJam = 400000;
+                else if (hour === 16 || hour === 22) hargaPerJam = 650000;
+                else if (hour >= 18 && hour <= 20) hargaPerJam = 800000;
+            }
+            return hargaPerJam * durasi;
+        }
+
+        const totalHarga = hitungHarga();
+        const formattedTotal = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(totalHarga);
+
+        document.getElementById('res-nama').innerText = nama;
+        document.getElementById('res-jadwal').innerText = `${dateStr} | ${time}`;
+        document.getElementById('res-durasi').innerText = durasi + " Jam";
+        document.getElementById('res-total').innerText = formattedTotal;
+
+        function sendWA() {
+            const adminWA = "6281389614881"; 
+            const pesan = `Halo Admin FBA Rayyan Soccer,%0A%0ASaya ingin konfirmasi booking:%0A👤 Nama: ${nama}%0A📅 Tanggal: ${dateStr}%0A🕒 Jam: ${time}%0A⏳ Durasi: ${durasi} Jam%0A💰 Total: ${formattedTotal}%0A%0AMohon instruksi selanjutnya.`;
+            window.location.href = `https://wa.me/${adminWA}?text=${pesan}`;
+        }
+
+        function cancelBooking() {
+            if(confirm("Apakah Anda yakin ingin membatalkan pesanan ini?")) {
+                sessionStorage.clear();
+                window.location.href = "schedule.html";
+            }
+        }
+    </script>
+</body>
+</html>
